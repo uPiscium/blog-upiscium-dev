@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blog // SIGNAL</title>
+  </head>
+  <body>
+    <main class="page">
+      <p class="eyebrow">/blog</p>
+      <h1>Recent Posts</h1>
+      <section class="list">
+        {posts.map((post) => (
+          <a class="card" href={`/blog/${post.slug}/`}>
+            <div>
+              <p class="meta">{post.data.pubDate.toISOString().slice(0, 10)}</p>
+              <h2>{post.data.title}</h2>
+              <p>{post.data.description}</p>
+            </div>
+            <div class="tags">
+              {post.data.tags.map((tag) => <span>{`#${tag}`}</span>)}
+            </div>
+          </a>
+        ))}
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  body {
+    margin: 0;
+    background: #050816;
+    color: #d7f6ff;
+    font-family: system-ui, sans-serif;
+  }
+  .page {
+    width: min(900px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 32px 0 64px;
+  }
+  .eyebrow,
+  .meta {
+    font-family: ui-monospace, monospace;
+    color: #5df3ff;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    font-size: .8rem;
+  }
+  .list {
+    display: grid;
+    gap: 16px;
+  }
+  .card {
+    display: grid;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid rgba(93, 243, 255, 0.18);
+    border-radius: 18px;
+    padding: 20px;
+    background: rgba(10, 18, 36, 0.82);
+  }
+  .tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    color: #86a9b6;
+  }
+</style>

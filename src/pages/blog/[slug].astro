@@ -1,0 +1,83 @@
+---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+
+  return posts
+    .filter((post) => !post.data.draft)
+    .map((post) => ({
+      params: { slug: post.slug },
+      props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{post.data.title} // SIGNAL</title>
+    <meta name="description" content={post.data.description} />
+  </head>
+  <body>
+    <main class="page">
+      <a href="/blog/">← Back</a>
+      <p class="eyebrow">{post.data.pubDate.toISOString().slice(0, 10)}</p>
+      <h1>{post.data.title}</h1>
+      <p class="lead">{post.data.description}</p>
+      <article class="content">
+        <Content />
+      </article>
+    </main>
+  </body>
+</html>
+
+<style>
+  :global(h1, h2, h3, p) {
+    margin-top: 0;
+  }
+
+  body {
+    margin: 0;
+    background: #050816;
+    color: #d7f6ff;
+    font-family: system-ui, sans-serif;
+  }
+  .page {
+    width: min(760px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 32px 0 64px;
+  }
+  .eyebrow,
+  a {
+    font-family: ui-monospace, monospace;
+    color: #5df3ff;
+  }
+  .lead,
+  .content {
+    color: #86a9b6;
+    line-height: 1.8;
+  }
+  .content :global(pre) {
+    overflow: auto;
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(10, 18, 36, 0.82);
+  }
+  .content :global(code) {
+    font-family: ui-monospace, monospace;
+  }
+  .content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .content :global(th),
+  .content :global(td) {
+    border: 1px solid rgba(93, 243, 255, 0.18);
+    padding: 8px 12px;
+  }
+</style>
