@@ -17,6 +17,9 @@ importers:
       eslint:
         specifier: ^9
         version: 9.39.4(jiti@2.6.1)
+      remark-gfm:
+        specifier: ^4.0.1
+        version: 4.0.1
       typescript:
         specifier: ^5
         version: 5.9.3

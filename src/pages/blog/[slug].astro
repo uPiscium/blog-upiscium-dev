@@ -67,9 +67,43 @@ const { Content } = await post.render();
     padding: 16px;
     border-radius: 16px;
     background: rgba(10, 18, 36, 0.82);
+    border: 1px solid rgba(93, 243, 255, 0.18);
   }
   .content :global(code) {
     font-family: ui-monospace, monospace;
+  }
+  .content :global(:not(pre) > code) {
+    padding: 0.15rem 0.35rem;
+    border-radius: 6px;
+    background: rgba(93, 243, 255, 0.1);
+    color: #d7f6ff;
+  }
+  .content :global(h1),
+  .content :global(h2),
+  .content :global(h3) {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: #d7f6ff;
+  }
+  .content :global(p),
+  .content :global(ul),
+  .content :global(ol),
+  .content :global(blockquote),
+  .content :global(table) {
+    margin-bottom: 1rem;
+  }
+  .content :global(ul),
+  .content :global(ol) {
+    padding-left: 1.4rem;
+  }
+  .content :global(li + li) {
+    margin-top: 0.35rem;
+  }
+  .content :global(blockquote) {
+    margin-left: 0;
+    padding: 0.1rem 0 0.1rem 1rem;
+    border-left: 3px solid rgba(93, 243, 255, 0.5);
+    color: #b6dce6;
   }
   .content :global(table) {
     width: 100%;
@@ -79,5 +113,23 @@ const { Content } = await post.render();
   .content :global(td) {
     border: 1px solid rgba(93, 243, 255, 0.18);
     padding: 8px 12px;
+  }
+  .content :global(th) {
+    background: rgba(93, 243, 255, 0.08);
+    color: #d7f6ff;
+    text-align: left;
+  }
+  .content :global(a) {
+    color: #7cffb2;
+    text-decoration-color: rgba(124, 255, 178, 0.6);
+  }
+  .content :global(hr) {
+    border: 0;
+    border-top: 1px solid rgba(93, 243, 255, 0.18);
+    margin: 1.5rem 0;
+  }
+  .content :global(img) {
+    max-width: 100%;
+    border-radius: 16px;
   }
 </style>
