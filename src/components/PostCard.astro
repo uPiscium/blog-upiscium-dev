@@ -1,0 +1,9 @@
+---
+import TagList from './TagList.astro';
+interface Props { title:string; description:string; href:string; pubDate:string; updatedDate?:string; category?:string; tags:readonly string[]; }
+const { title, description, href, pubDate, updatedDate, category='Notes', tags } = Astro.props;
+---
+<a class="card post-card" href={href}>
+  <div class="meta"><time>{pubDate}</time>{updatedDate && <span>updated {updatedDate}</span>}<span>{category}</span></div>
+  <h3>{title}</h3><p>{description}</p><TagList tags={tags} />
+</a>

@@ -1,0 +1,21 @@
+---
+interface Props {
+  label: string;
+  caption?: string;
+}
+
+const { label, caption = 'Image placeholder' } = Astro.props;
+---
+
+<figure class="image-placeholder" aria-label={`${label} — ${caption}`}>
+  <div class="placeholder-art" aria-hidden="true"><span>///</span></div>
+  <figcaption><strong>{label}</strong><span>{caption}</span></figcaption>
+</figure>
+
+<style>
+  .image-placeholder { margin: 0; border: 1px dashed var(--line); background: rgba(16, 23, 43, .55); }
+  .placeholder-art { display: grid; min-height: 10rem; place-items: center; color: var(--night-violet); font-size: 1.5rem; letter-spacing: .35em; background: repeating-linear-gradient(135deg, transparent 0 1.2rem, rgba(133, 182, 255, .04) 1.2rem 1.3rem); }
+  figcaption { display: flex; justify-content: space-between; gap: 1rem; padding: .7rem .85rem; color: var(--text-secondary); font-size: .75rem; }
+  figcaption strong { color: var(--text-primary); }
+  @media (max-width: 640px) { figcaption { flex-direction: column; gap: 0; } }
+</style>

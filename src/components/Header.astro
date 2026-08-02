@@ -1,0 +1,42 @@
+---
+import Logo from './Logo.astro';
+import { site } from '../data/site';
+const path = Astro.url.pathname;
+---
+<header class="site-header" data-header>
+  <div class="header-inner container">
+    <a class="brand" href="/" aria-label="upiscium ホーム"><Logo /></a>
+    <nav class="desktop-nav" aria-label="メインナビゲーション">
+      {site.nav.map((item) => <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>{item.label}</a>)}
+    </nav>
+    <button class="search-button" type="button" data-search-open aria-label="サイト内を検索"><span>Search</span><kbd>Ctrl K</kbd></button>
+    <button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-menu" aria-label="メニューを開く"><span></span><span></span></button>
+  </div>
+  <nav class="mobile-menu" id="mobile-menu" data-mobile-menu aria-label="モバイルナビゲーション" hidden>
+    {site.nav.map((item) => <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>{`./${item.label.toLowerCase()}`}</a>)}
+  </nav>
+</header>
+<style>
+  .site-header { position:fixed; inset:0 0 auto; z-index:30; height:var(--header-height); border-bottom:1px solid transparent; background:rgba(2,3,10,.62); backdrop-filter:blur(14px); transition:height .2s, border-color .2s; }
+  .site-header.is-compact { height:64px; border-color:var(--line); }
+  .header-inner { display:flex; height:100%; align-items:center; gap:1.5rem; }
+  .brand { margin-right:auto; text-decoration:none; }
+  .desktop-nav { display:flex; gap:1.5rem; }
+  .desktop-nav a { color:var(--text-secondary); text-decoration:none; font-size:.85rem; }
+  .desktop-nav a:hover, .desktop-nav a[aria-current] { color:var(--text-primary); }
+  .search-button { display:flex; gap:.7rem; align-items:center; border:1px solid var(--line); border-radius:4px; padding:.4rem .55rem; background:transparent; cursor:pointer; font-size:.76rem; }
+  kbd { color:var(--text-secondary); font-size:.65rem; }
+  .menu-button { display:none; width:38px; height:36px; border:1px solid var(--line); background:transparent; }
+  .menu-button span { display:block; width:17px; height:1px; margin:5px auto; background:currentColor; }
+  .mobile-menu { position:absolute; top:100%; right:1rem; width:min(260px, calc(100% - 2rem)); border:1px solid var(--line); background:var(--background); }
+  .mobile-menu a { display:block; padding:.85rem 1rem; border-bottom:1px solid var(--line); text-decoration:none; }
+  @media(max-width:760px) { .desktop-nav{display:none}.menu-button{display:block}.search-button span,.search-button kbd{display:none}.search-button::before{content:'⌕';font-size:1.15rem}.mobile-menu:not([hidden]){display:block} }
+</style>
+<script>
+  const header = document.querySelector('[data-header]');
+  const menuButton = document.querySelector<HTMLButtonElement>('[data-menu-button]');
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+  const updateHeader = () => header?.classList.toggle('is-compact', window.scrollY > 32);
+  updateHeader(); window.addEventListener('scroll', updateHeader, { passive:true });
+  menuButton?.addEventListener('click', () => { const open = menuButton.getAttribute('aria-expanded') === 'true'; menuButton.setAttribute('aria-expanded', String(!open)); menuButton.setAttribute('aria-label', open ? 'メニューを開く' : 'メニューを閉じる'); if (menu) menu.hidden = open; });
+</script>

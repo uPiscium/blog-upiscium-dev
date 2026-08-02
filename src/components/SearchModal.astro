@@ -1,0 +1,91 @@
+---
+import { getCollection } from 'astro:content';
+import { works } from '../data/works';
+const publishedPosts = await getCollection('blog', ({ data }) => !data.draft);
+const indexedPosts = await Promise.all(publishedPosts.map(async (post) => {
+  const { headings } = await post.render();
+  return {
+    title: post.data.title,
+    description: post.data.description,
+    terms: [...post.data.tags, ...headings.map((heading) => heading.text)].join(' '),
+    href: `/blog/${post.slug}/`,
+    type: 'Blog',
+  };
+}));
+const items = [
+  ...works.map((work) => ({ title: work.title, description: work.summary, terms: [...work.domains, ...work.highlights].join(' '), href: `/works/${work.slug}/`, type: 'Work' })),
+  ...indexedPosts,
+];
+---
+<dialog class="search-dialog" data-search-dialog aria-labelledby="search-title">
+  <div class="search-head">
+    <div><span class="eyebrow">quick search</span><h2 id="search-title">Search</h2></div>
+    <button class="icon-button" type="button" data-search-close aria-label="検索を閉じる">Esc</button>
+  </div>
+  <label class="search-field"><span class="sr-only">サイト内検索</span><span aria-hidden="true">/</span><input type="search" data-search-input placeholder="作品、記事、タグを検索" autocomplete="off" /></label>
+  <p class="search-hint" data-search-hint>Featured Works / 主要タグ: Vulkan, AI, NixOS, Minecraft</p>
+  <ul class="search-results" data-search-results aria-label="検索候補"></ul>
+  <script type="application/json" data-search-data set:html={JSON.stringify(items)} />
+</dialog>
+<style>
+  .search-dialog { width:min(720px, calc(100% - 2rem)); max-height:min(80vh, 680px); margin:auto; padding:0; overflow:hidden; border:1px solid rgba(133,182,255,.4); border-radius:8px; background:var(--background); color:var(--text-primary); }
+  .search-dialog::backdrop { background:rgba(2,3,10,.78); backdrop-filter:blur(5px); }
+  .search-head { display:flex; justify-content:space-between; align-items:start; padding:1rem 1.2rem; border-bottom:1px solid var(--line); }
+  .search-head h2 { margin:.15rem 0 0; font-size:1.2rem; }
+  .icon-button { border:1px solid var(--line); border-radius:4px; background:transparent; cursor:pointer; color:var(--text-secondary); }
+  .search-field { display:flex; gap:.7rem; align-items:center; margin:1rem; padding:.7rem 1rem; border:1px solid var(--line); background:var(--surface); color:var(--flower-red); }
+  .search-field input { width:100%; border:0; outline:0; background:transparent; color:var(--text-primary); }
+  .search-hint { margin:1rem; color:var(--text-secondary); font-size:.78rem; }
+  .search-results { max-height:50vh; margin:0; padding:.4rem 1rem 1rem; overflow:auto; list-style:none; }
+  .search-results :global(a) { display:block; margin:.25rem 0; padding:.75rem; border:1px solid transparent; color:inherit; text-decoration:none; }
+  .search-results :global(a[data-active="true"]), .search-results :global(a:hover) { border-color:var(--line); background:var(--surface); }
+  .search-results :global(small) { color:var(--star-blue); }
+  .search-results :global(p) { margin:.25rem 0 0; color:var(--text-secondary); font-size:.78rem; }
+  .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+</style>
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-search-dialog]');
+  const input = dialog?.querySelector<HTMLInputElement>('[data-search-input]');
+  const results = dialog?.querySelector<HTMLElement>('[data-search-results]');
+  const hint = dialog?.querySelector<HTMLElement>('[data-search-hint]');
+  const dataNode = dialog?.querySelector<HTMLElement>('[data-search-data]');
+  const items = JSON.parse(dataNode?.textContent || '[]');
+  let active = 0;
+  const render = () => {
+    if (!results || !input) return;
+    const query = input.value.trim().toLowerCase();
+    const found = (query ? items.filter((item:any) => `${item.title} ${item.description} ${item.terms}`.toLowerCase().includes(query)) : items.filter((item:any) => item.type === 'Work')).slice(0, 8);
+    active = Math.min(active, Math.max(found.length - 1, 0));
+    results.replaceChildren(...found.map((item:any, i:number) => {
+      const li = document.createElement('li');
+      const link = document.createElement('a');
+      const type = document.createElement('small');
+      const title = document.createElement('strong');
+      const description = document.createElement('p');
+      link.href = item.href;
+      if (i === active) link.dataset.active = 'true';
+      type.textContent = item.type;
+      title.textContent = item.title;
+      description.textContent = item.description;
+      link.append(type, title, description);
+      li.append(link);
+      return li;
+    }));
+    if (hint) hint.hidden = Boolean(query);
+  };
+  const open = () => { if (!dialog?.open) dialog?.showModal(); render(); requestAnimationFrame(() => input?.focus()); };
+  document.querySelectorAll('[data-search-open]').forEach((button) => button.addEventListener('click', open));
+  dialog?.querySelector('[data-search-close]')?.addEventListener('click', () => dialog.close());
+  dialog?.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+  input?.addEventListener('input', () => { active = 0; render(); });
+  dialog?.addEventListener('keydown', (event) => {
+    const links = [...(results?.querySelectorAll<HTMLAnchorElement>('a') || [])];
+    if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && links.length) { event.preventDefault(); active = (active + (event.key === 'ArrowDown' ? 1 : -1) + links.length) % links.length; render(); results?.querySelectorAll<HTMLAnchorElement>('a')[active]?.focus(); }
+    if (event.key === 'Enter' && document.activeElement === input && links[active]) { event.preventDefault(); links[active].click(); }
+  });
+  document.addEventListener('keydown', (event) => {
+    const target = event.target as HTMLElement;
+    const typing = ['INPUT','TEXTAREA'].includes(target.tagName) || target.isContentEditable;
+    if (((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') || (!typing && event.key === '/')) { event.preventDefault(); open(); }
+  });
+</script>

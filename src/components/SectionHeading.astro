@@ -1,0 +1,5 @@
+---
+interface Props { path: string; title: string; href?: string; linkLabel?: string; }
+const { path, title, href, linkLabel = 'view all' } = Astro.props;
+---
+<header class="section-heading"><div><span class="path">{path}</span><h2>{title}</h2></div>{href && <a class="command-link" href={href}>{linkLabel}</a>}</header>

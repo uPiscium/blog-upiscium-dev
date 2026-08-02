@@ -1,0 +1,20 @@
+---
+interface Props { compact?: boolean; color?: boolean; }
+const { compact = false, color = false } = Astro.props;
+---
+<span class:list={["logo", color && "is-color"]} aria-label="upiscium">
+  <svg viewBox="0 0 44 44" width="36" height="36" aria-hidden="true">
+    <circle cx="22" cy="22" r="19" fill="none" stroke="currentColor" stroke-width="1.5" />
+    <path class="star" d="M22 8l1.5 7.5L31 17l-7.5 1.5L22 26l-1.5-7.5L13 17l7.5-1.5z" fill="currentColor" />
+    <g class="flower" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+      <path d="M22 24c-7-7-12 2-6 4m6-4c7-7 12 2 6 4M22 24c-2 5-1 9 0 12" />
+      <path d="M18 26c-7 0-8 5-4 7m12-7c7 0 8 5 4 7M16 27l-5 1m17-1 5 1" />
+    </g>
+  </svg>
+  {!compact && <span>upiscium</span>}
+</span>
+<style>
+  .logo { display:inline-flex; align-items:center; gap:.65rem; color:var(--text-primary); font-weight:700; letter-spacing:.04em; }
+  .is-color .star { color: var(--star-blue); }
+  .is-color .flower { color: var(--flower-red); }
+</style>
