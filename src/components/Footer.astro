@@ -1,0 +1,21 @@
+---
+import Logo from './Logo.astro';
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+const copyright = year <= 2026 ? '© 2026 upiscium' : `© 2026–${year} upiscium`;
+---
+<footer class="footer">
+  <div class="container footer-grid">
+    <div><Logo color /><p class="muted">{copyright}</p></div>
+    <nav aria-label="フッターナビゲーション">{site.nav.map((item) => <a href={item.href}>{item.label}</a>)}</nav>
+    <nav aria-label="外部リンク">{site.socials.map((item) => item.href === '#' ? <span>{item.label}（準備中）</span> : <a href={item.href}>{item.label}</a>)}</nav>
+    <nav aria-label="ポリシー"><span>License（準備中）</span><span>Privacy（準備中）</span></nav>
+  </div>
+</footer>
+<style>
+  .footer { margin-top:6rem; border-top:1px solid var(--line); padding:3rem 0; background:rgba(2,3,10,.6); }
+  .footer-grid { display:grid; grid-template-columns:2fr repeat(3,1fr); gap:2rem; }
+  nav { display:flex; flex-direction:column; gap:.45rem; }
+  nav a, nav span { color:var(--text-secondary); text-decoration:none; font-size:.82rem; }
+  @media(max-width:700px){.footer-grid{grid-template-columns:1fr 1fr}.footer-grid>div{grid-column:1/-1}}
+</style>

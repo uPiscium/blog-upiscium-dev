@@ -1,16 +1,18 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WorkCard from '../components/WorkCard.astro';
+import { works } from '../data/works';
 ---
-
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>404</title>
-  </head>
-  <body style="margin:0;display:grid;place-items:center;min-height:100vh;background:#050816;color:#d7f6ff;font-family:system-ui,sans-serif;">
-    <main>
-      <p style="font-family:ui-monospace,monospace;color:#5df3ff;">404 // signal lost</p>
-      <h1>Page not found</h1>
-    </main>
-  </body>
-</html>
+<BaseLayout title="404 — upiscium" description="指定されたページが見つかりません。">
+  <main id="main" class="page-main container not-found">
+    <section class="terminal panel" aria-labelledby="error-title">
+      <p class="path">$ resolve current_route</p>
+      <h1 id="error-title">error: route not found</h1>
+      <p class="status">status: 404</p>
+      <nav aria-label="主要ページ"><a href="/">./home</a><a href="/about/">./about</a><a href="/works/">./works</a><a href="/blog/">./blog</a></nav>
+      <button type="button" data-search-open>&gt; search site</button>
+    </section>
+    <section class="section"><header class="section-heading"><div><p class="path">/fallback</p><h2>Featured Works</h2></div></header><div class="grid grid-3">{works.map((work) => <WorkCard work={work} />)}</div></section>
+  </main>
+</BaseLayout>
+<style>.not-found{padding-top:calc(var(--header-height) + 5rem)}.terminal{max-width:800px;padding:clamp(1.5rem,5vw,3rem)}.terminal h1{font-size:clamp(1.8rem,5vw,3.5rem)}.terminal nav{display:flex;flex-wrap:wrap;gap:1rem;margin:2rem 0}.terminal button{border:1px solid var(--line);padding:.6rem 1rem;background:var(--surface);color:var(--star-blue);cursor:pointer}</style>

@@ -1,0 +1,27 @@
+---
+interface Props { code: string; language?: string; file?: string; highlight?: number[]; diff?: boolean; }
+const { code, language = 'text', file = 'untitled', highlight = [], diff = false } = Astro.props;
+const lines = code.split('\n');
+---
+<figure class="code-preview" data-code-preview>
+  <figcaption><span>{file}</span><span class="language">{language}</span><button type="button" data-copy>copy</button></figcaption>
+  <div class="code-scroll"><pre><code>{lines.map((line, index) => <span class:list={["code-line", highlight.includes(index + 1) && "highlight", diff && line.startsWith('+') && "addition", diff && line.startsWith('-') && "deletion"]}><span class="line-number">{index + 1}</span><span>{line || ' '}</span></span>)}</code></pre></div>
+</figure>
+<script is:inline>
+  document.querySelectorAll('[data-code-preview]').forEach((preview) => {
+    const button = preview.querySelector('[data-copy]');
+    button?.addEventListener('click', async () => {
+      const text = [...preview.querySelectorAll('.code-line > span:last-child')].map((line) => line.textContent).join('\n');
+      try {
+        if (!navigator.clipboard) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(text);
+        if (button) { button.textContent = 'copied'; setTimeout(() => button.textContent = 'copy', 1200); }
+      } catch { if (button) button.textContent = 'copy failed'; }
+    });
+  });
+</script>
+<style>
+  .code-preview { margin: 2rem 0; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; background: #060a16; }
+  figcaption { display: flex; gap: 1rem; align-items: center; padding: .65rem 1rem; color: var(--text-secondary); border-bottom: 1px solid var(--line); font-size: .78rem; } .language { color: var(--star-blue); } button { margin-left: auto; border: 1px solid var(--line); background: transparent; color: inherit; cursor: pointer; padding: .2rem .55rem; }
+  .code-scroll { overflow-x: auto; } pre { margin: 0; padding: 1rem 0; min-width: max-content; } code { display: block; font: .82rem/1.8 var(--font-ui); } .code-line { display: block; padding-right: 1.5rem; } .line-number { display: inline-block; width: 3rem; padding-right: 1rem; text-align: right; color: #52617e; user-select: none; } .highlight { background: rgba(133,182,255,.12); } .addition { background: rgba(80,200,120,.12); } .deletion { background: rgba(220,54,91,.12); }
+</style>

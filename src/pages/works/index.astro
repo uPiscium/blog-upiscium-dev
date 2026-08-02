@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WorkCard from '../../components/WorkCard.astro';
+import { works } from '../../data/works';
+---
+
+<!-- Prototype page: work descriptions and presentation are subject to design review. -->
+<BaseLayout title="Works // SIGNAL" description="Software, systems, and research work.">
+  <main id="main" class="page-main">
+    <div class="container">
+      <header class="page-header">
+        <p class="path">/works</p>
+        <h1>Works</h1>
+        <p class="lede">Software、System、Research。設計から運用までの試行を、現在の公開範囲に合わせて記録しています。</p>
+      </header>
+
+      <section aria-labelledby="works-heading">
+        <div class="section-heading">
+          <h2 id="works-heading">Selected work</h2>
+          <span class="muted">{works.length} entries / prototype index</span>
+        </div>
+        <div class="grid grid-3">
+          {works.map((work) => <WorkCard work={work} detailed />)}
+        </div>
+      </section>
+    </div>
+  </main>
+</BaseLayout>

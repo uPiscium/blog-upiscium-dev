@@ -2,6 +2,8 @@
 title: System Design Notes for Frontend
 description: UI分割、状態管理、配信最適化をどう設計するかをまとめた記事。
 pubDate: 2026-04-08
+category: Research
+featured: true
 tags:
   - architecture
   - frontend

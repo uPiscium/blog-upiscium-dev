@@ -1,0 +1,13 @@
+---
+import type { Work } from '../data/works';
+import TagList from './TagList.astro';
+interface Props { work: Work; detailed?: boolean; }
+const { work, detailed = false } = Astro.props;
+---
+<a class="card work-card" href={`/works/${work.slug}/`}>
+  <div class="meta"><span>{work.type}</span><span class="status">{work.status}</span></div>
+  <h3>{work.title}</h3><p>{work.summary}</p><p><strong>Role:</strong> {work.role}</p>
+  {detailed && <ul class="highlights">{work.highlights.map((item) => <li>{item}</li>)}</ul>}
+  <TagList tags={work.domains} />
+</a>
+<style>.work-card p{font-size:.86rem}.highlights{padding-left:1.1rem;color:var(--text-secondary);font-size:.8rem}</style>
