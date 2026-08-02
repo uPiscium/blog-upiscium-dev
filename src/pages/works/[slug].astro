@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ImagePlaceholder from '../../components/ImagePlaceholder.astro';
+import { works } from '../../data/works';
+
+export function getStaticPaths() {
+  return works.map((work) => ({ params: { slug: work.slug }, props: { work } }));
+}
+
+const { work } = Astro.props;
+---
+
+<!-- Prototype page: detail copy intentionally reflects the current publication boundary. -->
+<BaseLayout title={`${work.title} // SIGNAL`} description={work.summary}>
+  <main id="main" class="page-main">
+    <div class="container detail">
+      <nav aria-label="Breadcrumb"><a class="command-link" href="/works/">Back to works</a></nav>
+      <header class="page-header">
+        <p class="path">/works/{work.slug} · {work.type}</p>
+        <h1>{work.title}</h1>
+        <p class="lede">{work.summary}</p>
+        <div class="meta"><span>Status: <strong class="status">{work.status}</strong></span><span>Visibility: {work.visibility}</span></div>
+      </header>
+
+      {work.type === 'Software' && (
+        <>
+          <section><h2>Overview</h2><p>Minecraft MODとして、感染封じ込めと持続可能な拠点構築を中心にゲームループを設計する。</p></section>
+          <section><h2>Problem</h2><p>Fungal Infection: Sporeの感染世界に対し、既存MODの設備を単に併置するのではなく、プレイヤーの判断につながる統合が必要になる。</p></section>
+          <section><h2>Design</h2><p>感染圧力、資源供給、抑制範囲を相互に関連づけ、Create／TFMGの生産設備が封じ込めに意味を持つ構造を優先する。</p></section>
+          <section><h2>Architecture</h2><p>NeoForgeを基盤として複数MOD間の要件とゲーム内フローを接続する。詳細な互換性情報はリリース準備に合わせて更新する。</p></section>
+          <section><h2>My Role</h2><p>ゲームデザイン、要件定義、実装、テスト、リリース準備までを一人で担当する。</p></section>
+          <section><h2>Technical Highlights</h2><ul>{work.highlights.map((item) => <li>{item}</li>)}</ul>
+            <div class="placeholder-grid">
+              <ImagePlaceholder label="感染世界の拠点全景" caption="Base overview placeholder" />
+              <ImagePlaceholder label="Stabilizer 3 Tier" caption="Tier comparison placeholder" />
+              <ImagePlaceholder label="Create／TFMG供給設備" caption="Supply facility placeholder" />
+              <ImagePlaceholder label="感染抑制範囲図" caption="Containment range placeholder" />
+              <ImagePlaceholder label="生産フロー図" caption="Production flow placeholder" />
+            </div>
+          </section>
+          <section><h2>Status</h2><p>Preparing for Release。バランス調整と統合テストを進めている。</p></section>
+          <section><h2>Future Work</h2><p>公開前確認、ドキュメント整備、互換性範囲の確定を予定している。</p></section>
+          <p class="prototype-note">Prototype note: implementation details, balance values, and final MOD compatibility will be documented as the release approaches.</p>
+        </>
+      )}
+
+      {work.type === 'System' && (
+        <>
+          <section><h2>Overview</h2><p>人格形成と自意識の創発を研究・検証するためのローカルAIシステム。完成した能力や結果を示すものではない。</p></section>
+          <section><h2>Requirements</h2><p>ローカル実行、段階的な検証、再現可能なデプロイ、観測可能な運用を暫定要件としている。</p></section>
+          <section><h2>Architecture</h2><p>構成は検討中であり、確定した独自性や成果として断定しない。公開可能になった範囲から更新する。</p></section>
+          <section><h2>Components</h2><p>推論、状態管理、観測、デプロイの責務を分ける案を検証している。詳細は仮設計である。</p></section>
+          <section><h2>My Role</h2><p>システム設計、ローカル推論基盤、運用設計。</p></section>
+          <section><h2>Operations</h2><p>現在はデプロイ準備中。次のマイルストーンはローカル環境への安定デプロイ。</p></section>
+          <section><h2>Security</h2><p>ローカル境界とデータ取扱いを設計対象とする。具体設定はプロトタイプでは公開しない。</p></section>
+          <section><h2>Future Work</h2><p>安定デプロイ後に検証手順と観測項目を整理する予定。</p></section>
+          <p class="prototype-note">Prototype note: conclusions, evaluation criteria, and operational details remain provisional while the system is being prepared for deployment.</p>
+        </>
+      )}
+
+      {work.type === 'Research' && (
+        <>
+          <section><h2>Overview</h2><p>マルチエージェントシステムを用いた社会的相互作用に関する研究プロジェクト。</p></section>
+          <section><h2>Research Question</h2><p>一般的な研究目的のみ公開する。具体的な問いは論文公開前のため記載しない。</p></section>
+          <section><h2>Motivation</h2><p>社会的相互作用を計算機上で扱うための研究として進行している。</p></section>
+          <section><h2>Method</h2><p>具体的な研究手法、実験条件、内部アーキテクチャは非公開。</p></section>
+          <section><h2>My Role</h2><p>研究設計と実験環境の検討。詳細な担当範囲は公開後に更新する。</p></section>
+          <section><h2>Current Status</h2><p>Research in progress。実験結果や未公開の新規性は掲載しない。</p></section>
+          <section><h2>Publications</h2><p>詳細は論文公開後に追加予定。</p></section>
+          <p class="prototype-note">一般的な研究目的のみ公開しています。</p>
+        </>
+      )}
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .detail { padding-bottom: 5rem; }
+  .detail nav { margin-bottom: 2rem; }
+  .detail section { max-width: 780px; margin: 3rem 0; }
+  .detail h2 { margin-bottom: .8rem; }
+  .detail p, .detail li { color: var(--text-secondary); }
+  .meta { margin-top: 1.25rem; }
+  .placeholder-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 2rem; }
+  .placeholder-grid > :last-child { grid-column: 1 / -1; }
+  .prototype-note { margin-top: 3rem; }
+  @media (max-width: 640px) { .placeholder-grid { grid-template-columns: 1fr; } .placeholder-grid > :last-child { grid-column: auto; } }
+</style>
