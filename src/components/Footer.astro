@@ -1,0 +1,14 @@
+---
+const year = new Date().getFullYear();
+const copyright = year === 2026 ? '© 2026 upiscium' : `© 2026–${year} upiscium`;
+---
+<footer class="site-footer">
+  <div class="site-shell footer-inner">
+    <div><strong>upiscium</strong><div>{copyright}</div></div>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="/about/">About</a><a href="/works/">Works</a><a href="/blog/">Blog</a><a href="/contact/">Contact</a>
+      <a href="https://github.com/upiscium">GitHub</a><a href="#">Qiita</a><a href="#">X</a><a href="/rss.xml">RSS</a>
+      <a href="/license/">License</a><a href="/privacy/">Privacy</a>
+    </nav>
+  </div>
+</footer>
