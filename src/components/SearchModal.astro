@@ -1,0 +1,36 @@
+---
+import { works } from '../data/site';
+const tags = ['Vulkan', 'C++', 'Artificial Intelligence', 'Proxmox', 'Minecraft'];
+---
+<div class="search-backdrop" data-search-backdrop role="presentation">
+  <section class="search-dialog" role="dialog" aria-modal="true" aria-label="Site search">
+    <input class="search-input" data-search-input type="search" placeholder="Search Blog and Works" autocomplete="off" />
+    <div class="search-groups">
+      <div class="search-group">
+        <h3>Featured Works</h3>
+        {works.map((work) => <a href={`/works/${work.slug}/`}>{work.title}</a>)}
+      </div>
+      <div class="search-group">
+        <h3>Primary Tags</h3>
+        {tags.map((tag) => <a href={`/search/?tag=${encodeURIComponent(tag.toLowerCase())}`}>#{tag}</a>)}
+      </div>
+    </div>
+    <p class="meta">Ctrl/⌘ K open · ↑↓ select · Enter open · Esc close</p>
+  </section>
+</div>
+<script is:inline>
+  const backdrop = document.querySelector('[data-search-backdrop]');
+  const input = document.querySelector('[data-search-input]');
+  const openSearch = () => { backdrop?.classList.add('open'); setTimeout(() => input?.focus(), 0); };
+  const closeSearch = () => backdrop?.classList.remove('open');
+  document.querySelectorAll('[data-search-open]').forEach((button) => button.addEventListener('click', openSearch));
+  document.addEventListener('keydown', (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); openSearch(); }
+    if (event.key === 'Escape') closeSearch();
+    if (event.key === '/' && !backdrop?.classList.contains('open')) { event.preventDefault(); openSearch(); }
+  });
+  backdrop?.addEventListener('click', (event) => { if (event.target === backdrop) closeSearch(); });
+  input?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && input.value.trim()) window.location.href = `/search/?q=${encodeURIComponent(input.value.trim())}`;
+  });
+</script>
