@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { site } from '../data/site';
+---
+<BaseLayout title={`Contact — ${site.name}`} description="upisciumへの連絡方法。">
+<!-- Prototype copy: replace contact wording and channels after design approval. -->
+  <main id="main" class="page-main container contact"><header class="page-header"><p class="eyebrow">/contact</p><h1>Contact</h1><p class="lede">技術交流・共同研究・OSS連携、仕事・開発依頼、登壇・執筆・取材について連絡できます。</p></header>
+    <section class="section"><SectionHeading path="01 / channels" title="Contact Methods" /><div class="grid grid-3"><article class="card"><p class="path">WORK / RESEARCH</p><h2>メール</h2><p class="muted">仕事、研究、登壇、執筆、取材について。</p><span class="email" data-email role="button" tabindex="0" aria-label="メールアドレスを表示する">contact [at] upiscium [dot] dev</span><button type="button" data-copy>メールアドレスをコピー</button></article><article class="card"><p class="path">OSS / TECHNICAL</p><h2>GitHub Issues</h2><p class="muted">OSSや公開できる技術的な相談は、関連リポジトリのIssueを利用してください。</p><a href={site.socials[0].href}>GitHub</a></article><article class="card"><p class="path">SHORT MESSAGE</p><h2>SNS</h2><p class="muted">軽い連絡はXなどのSNSを利用できます。Discordでの連絡も可能です。必要に応じてメールで案内します（ユーザー名は公開しません）。</p><a href="/about/">External links →</a></article></div></section>
+    <section class="section"><SectionHeading path="02 / guidance" title="Before you send" /><div class="panel note"><h2>書いてほしいこと</h2><ul><li>相談・依頼の概要</li><li>期待する関わり方と期限</li><li>関連するURLや技術的な前提</li></ul><p class="muted">内容を確認し、必要なものに返信します。問い合わせフォームは設置していません。</p></div></section>
+  </main></BaseLayout>
+<script is:inline>
+  const button = document.querySelector('[data-copy]'); const email = document.querySelector('[data-email]');
+  const reveal = () => { if (email) email.textContent = 'contact@upiscium.dev'; };
+  email?.addEventListener('click', reveal); email?.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') reveal(); });
+  button?.addEventListener('click', async () => { try { if (!navigator.clipboard) throw new Error('Clipboard unavailable'); await navigator.clipboard.writeText('contact@upiscium.dev'); if (button) button.textContent = 'コピーしました'; } catch { reveal(); if (button) button.textContent = '選択してコピーしてください'; } });
+</script>
+<style>.contact .card h2 { margin:.35rem 0 .8rem; font-size:1.3rem; }.email { display:inline-block; margin:.8rem 0; color:var(--star-blue); font-family:var(--font-ui); cursor:pointer; }.card button { display:block; border:1px solid var(--line); padding:.35rem .65rem; color:var(--text-primary); background:transparent; cursor:pointer; }.note { padding:1.5rem; }</style>
