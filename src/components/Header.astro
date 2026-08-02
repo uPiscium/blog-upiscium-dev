@@ -1,0 +1,28 @@
+---
+import Logo from './Logo.astro';
+import { navItems } from '../data/site';
+const pathname = Astro.url.pathname;
+---
+<header class="site-header" data-header>
+  <div class="site-shell header-inner">
+    <a class="brand" href="/" aria-label="upiscium home"><Logo /><span>upiscium</span></a>
+    <div class="header-actions">
+      <nav aria-label="Main navigation">
+        <ul class="nav-list" data-nav-list>
+          {navItems.map((item) => <li><a class="nav-link" href={item.href} aria-current={pathname.startsWith(item.href) ? 'page' : undefined}>{item.label}</a></li>)}
+        </ul>
+      </nav>
+      <button class="icon-button" type="button" data-search-open aria-label="Open search">⌕</button>
+      <button class="icon-button mobile-menu-button" type="button" data-menu-toggle aria-label="Open menu">≡</button>
+    </div>
+  </div>
+</header>
+<script is:inline>
+  const header = document.querySelector('[data-header]');
+  const nav = document.querySelector('[data-nav-list]');
+  const menu = document.querySelector('[data-menu-toggle]');
+  const updateHeader = () => header?.classList.toggle('compact', window.scrollY > 24);
+  updateHeader();
+  window.addEventListener('scroll', updateHeader, { passive: true });
+  menu?.addEventListener('click', () => nav?.classList.toggle('mobile-open'));
+</script>
